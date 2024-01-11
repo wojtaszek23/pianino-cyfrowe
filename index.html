@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<head>
+  <title>Pianino cyfrowe</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+</head>
+
+<style>
+  html, body
+  {
+    height: 100vh;
+    width: 100vw;
+    background-color: black;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+  }
+  #container
+  {
+    height:100%;
+    width:100%;
+    display: grid;
+    background-color: gray;
+    grid: 1fr 50px 5fr 204px 50px/ 1fr 972px 1fr;
+  }
+  #keyboard
+  {
+    display: grid;
+    grid-template-columns: repeat(72,12.5px);
+    grid-template-rows: 100px / 100px;
+    grid-area: 4 / 2 / span 1 / span 1;
+    gap: 1px;
+  }
+  .key_white
+  {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    background-color: white;
+    grid-area: 1 / 1 / span 2 / span 2;
+    border-color: black;
+    padding: 0 0 0 0;
+    border: 0;
+    margin: 0;
+    font-size: 20px;
+    border-radius: 2%;
+  }
+  .key_white:hover
+  {
+    background-color: #CCCCCC;
+  }
+  .key_white:focus
+  {
+    outline: none;
+    box-shadow: none;
+  }
+  .key_white_playing
+  {
+    background-color: #4477BB;
+  }
+  .key_white_playing:active
+  {
+    background-color: #4477BB;
+  }
+  .key_white_playing:hover
+  {
+    background-color: #4477BB;
+  }
+  .key_black
+  {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    background-color: black;
+    z-index:1;
+    grid-area: 1 / 1 / span 1 / span 2;
+    padding: 0 0 0 0;
+    border: 0;
+    margin: 0;
+    color: white;
+    font-size: 20px;
+    border-radius: 2%;
+  }
+  .key_black:focus
+  {
+    outline: none;
+    box-shadow: none;
+  }
+  .key_black:hover
+  {
+    background-color: #222222;
+  }
+  .key_black_playing
+  {
+    background-color: #933333;
+  }
+  .key_black_playing:active
+  {
+    background-color: #933333;
+  }
+  .key_black_playing:hover
+  {
+    background-color: #933333;
+  }
+  #radio_states
+  {
+    justify-content: center;
+    grid-area: 1 / 1 / span 1 / span 1;
+  }
+  .key_editing
+  {
+    z-index: 1;
+    border: green solid 2px;
+  }
+  .key_editing:focus
+  {
+    border: green solid 2px;
+    z-index: 1;
+  }
+  .key_editing:hover
+  {
+    border: green solid 2px;
+    z-index: 1;
+  }
+</style>
+
+<body>
+  <div id="container" onmousedown="return false">
+    <div id="radio_states">
+      <input type="radio" id="play_state" name="play_edit_state" value="play">Tryb grania</input>
+      </br>
+      <input type="radio" id="edit_state" name="play_edit_state" value="edit">Przypisywanie klawiszy</input>
+    </div>
+    <div id="keyboard">
+      <button class="key_white" id="dupa" style="grid-column-start: 1;"></button>
+      <button class="key_black" style="grid-column-start: 2;"></button>
+      <button class="key_white" style="grid-column-start: 3;"></button>
+      <button class="key_black" style="grid-column-start: 4;"></button>
+      <button class="key_white" style="grid-column-start: 5;"></button>
+      <button class="key_white" style="grid-column-start: 7;"></button>
+      <button class="key_black" style="grid-column-start: 8;"></button>
+      <button class="key_white" style="grid-column-start: 9;"></button>
+      <button class="key_black" style="grid-column-start: 10;"></button>
+      <button class="key_white" style="grid-column-start: 11;"></button>
+      <button class="key_black" style="grid-column-start: 12;"></button>
+      <button class="key_white" style="grid-column-start: 13;"></button>
+      
+      <button class="key_white" style="grid-column-start: 15;"></button>
+      <button class="key_black" style="grid-column-start: 16;"></button>
+      <button class="key_white" style="grid-column-start: 17;"></button>
+      <button class="key_black" style="grid-column-start: 18;"></button>
+      <button class="key_white" style="grid-column-start: 19;"></button>
+      <button class="key_white" style="grid-column-start: 21;"></button>
+      <button class="key_black" style="grid-column-start: 22;"></button>
+      <button class="key_white" style="grid-column-start: 23;"></button>
+      <button class="key_black" style="grid-column-start: 24;"></button>
+      <button class="key_white" style="grid-column-start: 25;"></button>
+      <button class="key_black" style="grid-column-start: 26;"></button>
+      <button class="key_white" style="grid-column-start: 27;"></button>
+      
+      <button class="key_white" style="grid-column-start: 29;"></button>
+      <button class="key_black" style="grid-column-start: 30;"></button>
+      <button class="key_white" style="grid-column-start: 31;"></button>
+      <button class="key_black" style="grid-column-start: 32;"></button>
+      <button class="key_white" style="grid-column-start: 33;"></button>
+      <button class="key_white" style="grid-column-start: 35;"></button>
+      <button class="key_black" style="grid-column-start: 36;"></button>
+      <button class="key_white" style="grid-column-start: 37;"></button>
+      <button class="key_black" style="grid-column-start: 38;"></button>
+      <button class="key_white" style="grid-column-start: 39;"></button>
+      <button class="key_black" style="grid-column-start: 40;"></button>
+      <button class="key_white" style="grid-column-start: 41;"></button>
+      
+      <button class="key_white" style="grid-column-start: 43;"></button>
+      <button class="key_black" style="grid-column-start: 44;"></button>
+      <button class="key_white" style="grid-column-start: 45;"></button>
+      <button class="key_black" style="grid-column-start: 46;"></button>
+      <button class="key_white" style="grid-column-start: 47;"></button>
+      <button class="key_white" style="grid-column-start: 49;"></button>
+      <button class="key_black" style="grid-column-start: 50;"></button>
+      <button class="key_white" style="grid-column-start: 51;"></button>
+      <button class="key_black" style="grid-column-start: 52;"></button>
+      <button class="key_white" style="grid-column-start: 53;"></button>
+      <button class="key_black" style="grid-column-start: 54;"></button>
+      <button class="key_white" style="grid-column-start: 55;"></button>
+      
+      <button class="key_white" style="grid-column-start: 57;"></button>
+      <button class="key_black" style="grid-column-start: 58;"></button>
+      <button class="key_white" style="grid-column-start: 59;"></button>
+      <button class="key_black" style="grid-column-start: 60;"></button>
+      <button class="key_white" style="grid-column-start: 61;"></button>
+      <button class="key_white" style="grid-column-start: 63;"></button>
+      <button class="key_black" style="grid-column-start: 64;"></button>
+      <button class="key_white" style="grid-column-start: 65;"></button>
+      <button class="key_black" style="grid-column-start: 66;"></button>
+      <button class="key_white" style="grid-column-start: 67;"></button>
+      <button class="key_black" style="grid-column-start: 68;"></button>
+      <button class="key_white" style="grid-column-start: 69;"></button>
+      
+      <button class="key_white" style="grid-column-start: 71;"></button>
+    </div>
+  </div>
+</body>
+
+<script>
+  var last_key = -1;
+  var pc_key = [];
+  const piano = [];
+  var piano_delay = [];
+  var mouse_pressed = false;
+  
+  for(let i=0; i<61; i++)
+  {
+    let index = i+1;
+    piano[i] = new Audio("sounds/f"+index+".mp3");
+    piano[i].load();
+    piano[i].currentTime = 0.25;
+    piano_delay[i] = null;
+  }
+  
+  var piano_free = [];
+  for(let i=0; i<61; i++)
+  {
+    piano_free[i] = true;
+  }
+  
+  const piano_div = document.getElementById("keyboard");
+  const piano_key_white = document.querySelectorAll(".key_white");
+  const piano_key_black = document.querySelectorAll(".key_black");
+  const piano_key = document.querySelectorAll(".key_white, .key_black");
+ 
+  function unpressed(nr)
+  {
+    //console.log("unpressed " + nr);
+    var play_state = document.getElementById("play_state").checked;
+    var edit_state = document.getElementById("edit_state").checked;
+    if(play_state == true && edit_state == false)
+    {
+      piano_free[nr] = true;
+      //piano_delay[nr] = setTimeout(pause,100,nr);
+      if(piano_key[nr].classList.contains("key_white_playing"))
+      {
+	//console.log("biale usuniete");
+	piano_key[nr].classList.remove("key_white_playing");
+      }
+      else
+      {
+	//console.log("czarne usuniete");
+	piano_key[nr].classList.remove("key_black_playing");
+      }
+    }
+  }
+  
+  document.body.onmousedown = function() {
+    mouse_pressed = true;
+  }
+  document.body.onmouseup = function() {
+    mouse_pressed = false;
+  }
+  
+  function play(nr)
+  {
+    console.log(nr);
+    if(piano_free[nr] == true)
+    {
+      if(piano_key[nr].classList.contains("key_white"))
+      {
+	piano_key[nr].classList.add("key_white_playing");
+      }
+      else
+      {
+	piano_key[nr].classList.add("key_black_playing");
+      }
+      clearTimeout(piano_delay[nr]);
+      piano[nr].pause();
+      piano[nr].currentTime = 0.25;
+      piano[nr].play();
+      piano_free[nr] = false;
+    };
+  }
+  
+  function pause(nr)
+  {
+    console.log("pauza " + nr);
+    if(piano_key[nr].classList.contains("key_white_playing"))
+      {
+	//console.log("biale usuniete");
+	piano_key[nr].classList.remove("key_white_playing");
+      }
+      else
+      {
+	//console.log("czarne usuniete");
+	piano_key[nr].classList.remove("key_black_playing");
+      }
+    piano[nr].pause();
+    piano[nr].currentTime = 0.25;
+  }
+
+  function pressed(nr){
+    if(mouse_pressed == false)
+    {
+      return;
+    }
+    else
+    {
+    var play_state = document.getElementById("play_state").checked;
+    var edit_state = document.getElementById("edit_state").checked;
+    
+    if(play_state == false && edit_state == true)
+    {
+      if(last_key > -1)
+      {
+	piano_key[last_key].classList.remove("key_editing");
+      }
+      last_key = nr;
+      piano_key[nr].classList.add("key_editing");
+    }
+    else if(play_state == true && edit_state ==false)
+    {
+      piano_free[nr] = true;
+      play(nr);
+    }
+  }
+  }
+ 
+  function set_key(char_key, nr)
+  {
+    piano_key[nr].innerHTML = char_key;
+    pc_key[char_key.charCodeAt(0)] = nr;
+  }
+ 
+  $(document).ready(function(){
+    for (let i = 0; i < piano_key.length; i++) {
+      piano_key[i].addEventListener("mousedown", function(){mouse_pressed = true;pressed(i)});
+      piano_key[i].addEventListener("mouseover", function(){pressed(i)});
+      piano_key[i].addEventListener("mouseout", function(){unpressed(i)});
+      piano_key[i].addEventListener("mouseup", function(){unpressed(i)});
+    }
+    
+    $(document).keydown(function( event ){
+      var key_nr = event.which;
+      var sound_nr = pc_key[key_nr];
+      var play_state = document.getElementById("play_state").checked;
+      var edit_state = document.getElementById("edit_state").checked;
+      if(play_state == true && edit_state == false && piano_free[sound_nr] == true)
+      {
+        play(sound_nr);
+      }
+      else if(play_state == false && edit_state == true)
+      {
+	var char_key = String.fromCharCode(key_nr);
+	for(let i = 0; i < 61; i++)
+	{
+	  if(piano_key[i].innerHTML == char_key)
+	  {
+	    piano_key[i].innerHTML = "";
+	  }
+	}
+	pc_key[key_nr] = last_key;
+	piano_key[last_key].innerHTML = String.fromCharCode(key_nr);
+	piano_key[last_key].classList.remove("key_editing");
+	last_key = -1;
+      }
+    });
+    
+    $(document).keyup(function( event ){
+      var play_state = document.getElementById("play_state").checked;
+      var edit_state = document.getElementById("edit_state").checked;
+      if(play_state == true && edit_state == false)
+      {
+	var key_nr = event.which;
+	var sound_nr = pc_key[key_nr];
+	piano_free[sound_nr] = true;
+	piano_delay[sound_nr] = setTimeout(pause,100,sound_nr);
+      }
+    });
+    
+    var play_edit_state = document.getElementById("play_state");
+    play_edit_state.checked = true;
+    
+    set_key('Q',12);
+    set_key('2',13);
+    set_key('W',14);
+    set_key('3',15);
+    set_key('E',16);
+    set_key('R',17);
+    set_key('5',18);
+    set_key('T',19);
+    set_key('6',20);
+    set_key('Y',21);
+    set_key('7',22);
+    set_key('U',23);
+    set_key('I',24);
+    set_key('9',25);
+    set_key('O',26);
+    set_key('0',27);
+    set_key('P',28);
+    
+    set_key('Z',29);
+    set_key('S',30);
+    set_key('X',31);
+    set_key('D',32);
+    set_key('C',33);
+    set_key('F',34);
+    set_key('V',35);
+    set_key('B',36);
+    set_key('H',37);
+    set_key('N',38);
+    set_key('J',39);
+    set_key('M',40);
+  });
+
+//TODO:
+//dodac funkcje: sprawdzanie trybu play lub edycja, zeby ify sie nie ciagnely, ze sprawdzaniem elemntow DOM
+//2 rodzaje timeoutow - dla klawiatury oraz myszki (buttonow) i dodanie jakichs pol tekstowych umozliwiajacych zmiane dla uzytkownika
+//dodac zmienianie last_key na =-1 zawsze po wejsciu do trybu edycji i ogolnie przechodzenie do "ustawien fabrycznych" przy togglowaniu radio buttona
+
+</script>
