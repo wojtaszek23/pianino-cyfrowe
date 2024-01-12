@@ -227,25 +227,39 @@
   const piano_key_white = document.querySelectorAll(".key_white");
   const piano_key_black = document.querySelectorAll(".key_black");
   const piano_key = document.querySelectorAll(".key_white, .key_black");
- 
-  function unpressed(nr)
+  
+  function current_play_edit_state()
   {
-    //console.log("unpressed " + nr);
     var play_state = document.getElementById("play_state").checked;
     var edit_state = document.getElementById("edit_state").checked;
     if(play_state == true && edit_state == false)
     {
+      return "play";
+    }
+    else if(play_state == false && edit_state == true)
+    {
+      return "edit";
+    }
+    else
+    {
+      console.log("ERROR: play edit state checking error.");
+      return "ERROR";
+    }
+  }
+ 
+  function unpressed(nr)
+  {
+    var state = current_play_edit_state();
+    if(state == "play")
+    {
       piano_free[nr] = true;
-      //piano_delay[nr] = setTimeout(pause,100,nr);
       if(piano_key[nr].classList.contains("key_white_playing"))
       {
-	//console.log("biale usuniete");
-	piano_key[nr].classList.remove("key_white_playing");
+        piano_key[nr].classList.remove("key_white_playing");
       }
       else
       {
-	//console.log("czarne usuniete");
-	piano_key[nr].classList.remove("key_black_playing");
+        piano_key[nr].classList.remove("key_black_playing");
       }
     }
   }
@@ -259,7 +273,6 @@
   
   function play(nr)
   {
-    console.log(nr);
     if(piano_free[nr] == true)
     {
       if(piano_key[nr].classList.contains("key_white"))
@@ -280,15 +293,12 @@
   
   function pause(nr)
   {
-    console.log("pauza " + nr);
     if(piano_key[nr].classList.contains("key_white_playing"))
       {
-	//console.log("biale usuniete");
 	piano_key[nr].classList.remove("key_white_playing");
       }
       else
       {
-	//console.log("czarne usuniete");
 	piano_key[nr].classList.remove("key_black_playing");
       }
     piano[nr].pause();
@@ -302,10 +312,8 @@
     }
     else
     {
-    var play_state = document.getElementById("play_state").checked;
-    var edit_state = document.getElementById("edit_state").checked;
-    
-    if(play_state == false && edit_state == true)
+      var state = current_play_edit_state();
+    if(state == "edit")
     {
       if(last_key > -1)
       {
@@ -314,7 +322,7 @@
       last_key = nr;
       piano_key[nr].classList.add("key_editing");
     }
-    else if(play_state == true && edit_state ==false)
+    else if(state == "play")
     {
       piano_free[nr] = true;
       play(nr);
@@ -339,38 +347,36 @@
     $(document).keydown(function( event ){
       var key_nr = event.which;
       var sound_nr = pc_key[key_nr];
-      var play_state = document.getElementById("play_state").checked;
-      var edit_state = document.getElementById("edit_state").checked;
-      if(play_state == true && edit_state == false && piano_free[sound_nr] == true)
+      var state = current_play_edit_state();
+      if(state == "play" && piano_free[sound_nr] == true && pc_key[key_nr] != undefined)
       {
         play(sound_nr);
       }
-      else if(play_state == false && edit_state == true)
+      else if(state == "edit" && last_key > -1 && last_key < 61)
       {
-	var char_key = String.fromCharCode(key_nr);
-	for(let i = 0; i < 61; i++)
-	{
-	  if(piano_key[i].innerHTML == char_key)
-	  {
-	    piano_key[i].innerHTML = "";
-	  }
-	}
-	pc_key[key_nr] = last_key;
-	piano_key[last_key].innerHTML = String.fromCharCode(key_nr);
-	piano_key[last_key].classList.remove("key_editing");
-	last_key = -1;
+        var char_key = String.fromCharCode(key_nr);
+        for(let i = 0; i < 61; i++)
+        {
+          if(piano_key[i].innerHTML == char_key)
+          {
+            piano_key[i].innerHTML = "";
+          }
+        }
+        pc_key[key_nr] = last_key;
+        piano_key[last_key].innerHTML = String.fromCharCode(key_nr);
+        piano_key[last_key].classList.remove("key_editing");
+        last_key = -1;
       }
     });
     
     $(document).keyup(function( event ){
-      var play_state = document.getElementById("play_state").checked;
-      var edit_state = document.getElementById("edit_state").checked;
-      if(play_state == true && edit_state == false)
+      var state = current_play_edit_state();
+      var key_nr = event.which;
+      if(state == "play" && pc_key[key_nr] != undefined)
       {
-	var key_nr = event.which;
-	var sound_nr = pc_key[key_nr];
-	piano_free[sound_nr] = true;
-	piano_delay[sound_nr] = setTimeout(pause,100,sound_nr);
+        var sound_nr = pc_key[key_nr];
+        piano_free[sound_nr] = true;
+        piano_delay[sound_nr] = setTimeout(pause,100,sound_nr);
       }
     });
     
@@ -407,11 +413,25 @@
     set_key('N',38);
     set_key('J',39);
     set_key('M',40);
+    
+    $("input[name='play_edit_state'][value='play']").on("change",function(){
+      if(last_key == -1)
+      {
+        return;
+      }
+      else if(piano_key[last_key].classList.contains("key_editing"))
+      {
+        piano_key[last_key].classList.remove("key_editing");
+      }
+      last_key = -1;
+    });
+    
+    $("input[name='play_edit_state'][value='edit']").on("change",function(){
+      last_key = -1;
+    });
   });
 
 //TODO:
-//dodac funkcje: sprawdzanie trybu play lub edycja, zeby ify sie nie ciagnely, ze sprawdzaniem elemntow DOM
-//2 rodzaje timeoutow - dla klawiatury oraz myszki (buttonow) i dodanie jakichs pol tekstowych umozliwiajacych zmiane dla uzytkownika
-//dodac zmienianie last_key na =-1 zawsze po wejsciu do trybu edycji i ogolnie przechodzenie do "ustawien fabrycznych" przy togglowaniu radio buttona
+//2 rodzaje timeoutow - dla klawiatury oraz myszki (buttonow) i dodanie jakichs pol tekstowych umozliwiajacych zmiane tych wartosci przez uzytkownika
 
 </script>
